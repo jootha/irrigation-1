@@ -12,5 +12,5 @@ public class Row {
     private int id;
     private String name;
     @Singular
-    private final List<Dropper> droppers;
+    private final List<Dropper> droppers = List.of();
 }
