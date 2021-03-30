@@ -78,12 +78,24 @@ public final class GreenHouseProducer {
     public static Flux<Drop> getDrops() {
         Flux<Drop> dropsFlux = Flux.empty();
 
-        //TODO go through all Greenhouses
-        //TODO    go through all Row
-        //TODO       go through all Dropper
-        //TODO          Create a flux that will emit a Drop every 10 millis seconds using the buildDrop() function
-        //TODO          then merge this new flux int the dropsFlux
-
+        // go through all Greenhouses
+        //    go through all Row
+        //       go through all Dropper
+        //          Create a flux that will emit a Drop every 10 millis seconds using the buildDrop() function
+        //          then merge this new flux int the dropsFlux
+        for ( GreenHouse g: greenHouses) {
+            for (Row r:g.getRows()){
+                for(Dropper d : r.getDroppers()){
+                    dropsFlux.interval(Duration.ofMillis(10))
+                            .map(aLong -> Drop.builder()
+                                    .greenHouseId(g.getId())
+                                    .rowId(r.getId())
+                                    .dropperId(d.getId())
+                                    .instant(Instant.now())
+                                    .build());
+                }
+            }
+        }
         return dropsFlux;
     }
 
