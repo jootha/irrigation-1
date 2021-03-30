@@ -74,7 +74,7 @@ class DripIrrigationTest {
     void followDetailedDropper() {
         Flux<DetailedDrop> dropFlux = dripIrrigation.followDetailedDropper(2, 1, 6)
                 .limitRequest(3)
-                .timeout(Duration.ofMillis(200));
+                .timeout(Duration.ofMillis(500));
 
         StepVerifier.create(dropFlux)
                 .assertNext(detailedDrop -> {

@@ -39,7 +39,14 @@ public class DripIrrigation {
     public Flux<DetailedDrop> followDetailedDropper(int greenHouseId, int rowId, int dropperId) {
         //TODO use the GreenHouseProducer.getDrops() function as producer, but filter the output to fit the given criteria
         //TODO    then map it to a DetailedDrop using the getDetailedDrop() function
-        return null;
+
+        return GreenHouseProducer.getDrops()
+                .onErrorContinue((throwable, object) -> LOGGER.error("Error : {}, {}", object.toString(), throwable.getMessage()))
+                .filter(drop -> drop.getGreenHouseId() == greenHouseId && drop.getRowId() == rowId && drop.getDropperId() == dropperId)
+                .limitRequest(8)
+                .timeout(Duration.ofMillis(500))
+                .log()
+                .flatMap(this::getDetailedDrop);
     }
 
     private Mono<DetailedDrop> getDetailedDrop(Drop drop) {
