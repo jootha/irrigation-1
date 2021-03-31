@@ -86,17 +86,12 @@ public final class GreenHouseProducer {
         for ( GreenHouse g: greenHouses) {
             for (Row r:g.getRows()){
                 for(Dropper d : r.getDroppers()){
-                    dropsFlux.interval(Duration.ofMillis(10))
-                            .map(aLong -> Drop.builder()
-                            .greenHouseId(g.getId())
-                            .rowId(r.getId())
-                            .dropperId(d.getId())
-                            .instant(Instant.now())
-                            .build());
+                    Flux <Drop> tempFlux = Flux.interval(Duration.ofMillis(10))
+                            .flatMap(aLong -> buildDrop(g,r,d));
+                    dropsFlux.mergeWith(tempFlux);
                 }
             }
         }
-
         return dropsFlux;
     }
 
