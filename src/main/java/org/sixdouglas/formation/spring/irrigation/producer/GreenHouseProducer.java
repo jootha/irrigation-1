@@ -88,7 +88,7 @@ public final class GreenHouseProducer {
                 for(Dropper d : r.getDroppers()){
                     Flux <Drop> tempFlux = Flux.interval(Duration.ofMillis(10))
                             .flatMap(aLong -> buildDrop(g,r,d));
-                    dropsFlux.mergeWith(tempFlux);
+                    dropsFlux = Flux.merge(dropsFlux, tempFlux);
                 }
             }
         }
